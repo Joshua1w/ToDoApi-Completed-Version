@@ -1,0 +1,76 @@
+@page
+@model TodoApi.Pages.Task.EditModel
+@{
+    ViewData["Title"] = "Edit Task";
+}
+<div class="container py-5" style="background: #f8fafc; min-height: 90vh;">
+    <div class="row justify-content-center">
+        <div class="col-lg-7 col-md-9">
+            <div class="card shadow-lg border-0 rounded-4 p-4">
+                <h2 class="mb-4 fw-bold text-primary text-center">Edit Task</h2>
+                <form method="post" autocomplete="off">
+                    <div class="mb-3">
+                        <label asp-for="TaskItem.Title" class="form-label fw-semibold">Title</label>
+                        <input asp-for="TaskItem.Title" class="form-control form-control-lg" />
+                        <span asp-validation-for="TaskItem.Title" class="text-danger"></span>
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for="TaskItem.Description" class="form-label fw-semibold">Description</label>
+                        <input asp-for="TaskItem.Description" class="form-control form-control-lg" />
+                        <span asp-validation-for="TaskItem.Description" class="text-danger"></span>
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for="TaskItem.DueDate" class="form-label fw-semibold">Due Date</label>
+                        <input asp-for="TaskItem.DueDate" class="form-control form-control-lg" />
+                        <span asp-validation-for="TaskItem.DueDate" class="text-danger"></span>
+                    </div>
+                    <div class="mb-4">
+                        <label asp-for="TaskItem.Priority" class="form-label fw-semibold">Priority</label>
+                        <select asp-for="TaskItem.Priority" class="form-select form-select-lg">
+                            <option>Low</option>
+                            <option>Medium</option>
+                            <option>High</option>
+                        </select>
+                    </div>
+                    <div class="d-grid mb-2">
+                        <button type="submit" class="btn btn-primary btn-lg fw-semibold shadow-sm">Save Changes</button>
+                    </div>
+                    <div class="d-grid">
+                        <a href="/Task/Index" class="btn btn-secondary btn-lg">Go Back to Task List</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+</div>
+</div>
+</div>
+</div>
+<script>
+    document.querySelector('form').onsubmit = async function(e) {
+        e.preventDefault();
+        const taskId = '@Model.TaskItem.Id';
+        const title = document.querySelector('[name="TaskItem.Title"]').value;
+        const description = document.querySelector('[name="TaskItem.Description"]').value;
+        const dueDate = document.querySelector('[name="TaskItem.DueDate"]').value;
+        const priority = document.querySelector('[name="TaskItem.Priority"]').value;
+        const body = {
+            title: title,
+            description: description,
+            dueDate: dueDate,
+            priority: priority
+        };
+        const response = await fetch(`/api/Tasks/${taskId}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+                // Add Authorization header if required
+            },
+            body: JSON.stringify(body)
+        });
+        if (response.ok) {
+            window.location.href = '/Task/Index';
+        } else {
+            alert('Failed to update task.');
+        }
+    };
+</script>

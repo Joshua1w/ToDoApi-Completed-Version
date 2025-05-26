@@ -1,0 +1,36 @@
+@page
+@model TodoApi.Pages.TaskItems.ListModel
+@{
+    ViewData["Title"] = "Task List";
+}
+
+<div class="container mt-4">
+    <h1>Task List</h1>
+    <hr />
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Description</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+        @if (Model.Tasks != null && Model.Tasks.Any())
+        {
+            foreach (var task in Model.Tasks)
+            {
+                <tr>
+                    <td>@task.Title</td>
+                    <td>@task.Description</td>
+                    <td>@(task.IsCompleted ? "Completed" : "Pending")</td>
+                </tr>
+            }
+        }
+        else
+        {
+            <tr><td colspan="3">No tasks found.</td></tr>
+        }
+        </tbody>
+    </table>
+</div>

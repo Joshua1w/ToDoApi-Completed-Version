@@ -1,0 +1,116 @@
+@page
+@model TodoApi.Pages.Task.IndexModel
+@{
+    ViewData["Title"] = "Task List";
+}
+
+<link rel="stylesheet" href="~/css/dashboard.css" />
+<div class="py-4 fade-in">
+    <div class="card shadow-sm w-100 border-0" style="border-radius: 0;">
+        <div class="card-body">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h1 class="mb-0" style="color: #1976d2; font-weight: 700;">Task List</h1>
+                <a asp-page="Create" class="btn btn-primary">+ Create New Task</a>
+            </div>
+            <div class="task-list-labels d-flex flex-wrap align-items-center justify-content-between px-2 py-2 mb-2" style="font-weight:600;background:#f8fafc;border-radius:0.5rem;">
+    <div style="min-width:120px;">Title</div>
+    <div style="min-width:140px;">Due Date</div>
+    <div>Priority</div>
+    <div>Completed</div>
+    <div>Actions</div>
+</div>
+<div class="task-list-container">
+    @foreach (var task in Model.TaskItems)
+    {
+        <div class="task-card mb-2 p-2 d-flex flex-wrap align-items-center justify-content-between gap-2">
+    <div class="task-title fw-semibold" style="min-width:120px;">@task.Title</div>
+    <div class="task-date" style="min-width:140px;">@task.DueDate</div>
+    <div class="task-priority">
+        @if (task.Priority == "Low")
+        {
+            <span class="badge bg-primary">Low</span>
+        }
+        else if (task.Priority == "Medium")
+        {
+            <span class="badge bg-brown">Medium</span>
+        }
+        else if (task.Priority == "High")
+        {
+            <span class="badge bg-warning text-dark">High</span>
+        }
+        else
+        {
+            <span class="badge bg-secondary">@task.Priority</span>
+        }
+    </div>
+    <div class="task-completed">
+    <span class="badge toggle-completed" 
+        data-task-id="@task.Id" 
+        style="cursor:pointer; user-select:none;">
+        @(task.IsCompleted ? "Yes" : "No")
+    </span>
+</div>
+    <div class="task-actions d-flex gap-1">
+        <a asp-page="Edit" asp-route-id="@task.Id" class="btn btn-sm btn-primary text-white">Edit</a>
+        <a asp-page="Delete" asp-route-id="@task.Id" class="btn btn-sm btn-danger text-white">Delete</a>
+    </div>
+</div>
+    }
+</div>
+        </div>
+    </div>
+</div>
+<script>
+    // Helper to get and set completed states in localStorage
+    function getCompletedStates() {
+        return JSON.parse(localStorage.getItem('completedTasks') || '{}');
+    }
+    function setCompletedStates(states) {
+        localStorage.setItem('completedTasks', JSON.stringify(states));
+    }
+
+    // On page load, set badges from localStorage
+    document.addEventListener('DOMContentLoaded', function() {
+        const states = getCompletedStates();
+        document.querySelectorAll('.toggle-completed').forEach(function(badge) {
+            const id = badge.getAttribute('data-task-id');
+            if (states[id] !== undefined) {
+                if (states[id]) {
+                    badge.textContent = 'Yes';
+                    badge.classList.remove('bg-warning','text-dark');
+                    badge.classList.add('bg-success');
+                } else {
+                    badge.textContent = 'No';
+                    badge.classList.remove('bg-success');
+                    badge.classList.add('bg-warning','text-dark');
+                }
+            } else {
+                // set initial color based on current text
+                if (badge.textContent.trim() === 'Yes') {
+                    badge.classList.remove('bg-warning','text-dark');
+                    badge.classList.add('bg-success');
+                } else {
+                    badge.classList.remove('bg-success');
+                    badge.classList.add('bg-warning','text-dark');
+                }
+            }
+            // Add click handler
+            badge.onclick = function() {
+                const states = getCompletedStates();
+                const isCompleted = badge.textContent.trim() === 'Yes';
+                if (isCompleted) {
+                    badge.textContent = 'No';
+                    badge.classList.remove('bg-success');
+                    badge.classList.add('bg-warning','text-dark');
+                    states[id] = false;
+                } else {
+                    badge.textContent = 'Yes';
+                    badge.classList.remove('bg-warning','text-dark');
+                    badge.classList.add('bg-success');
+                    states[id] = true;
+                }
+                setCompletedStates(states);
+            }
+        });
+    });
+</script>

@@ -1,0 +1,117 @@
+@page
+@model TodoApi.Pages.LoginModel
+@{
+    ViewData["Title"] = "Login";
+}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+<style>
+.hero-gradient {
+    background: linear-gradient(90deg, #6a82fb 0%, #fc5c7d 100%);
+    color: #fff;
+    padding: 3.5rem 0 2.5rem 0;
+    text-align: center;
+    margin-bottom: 0;
+}
+.card-login {
+    max-width: 410px;
+    margin: 0 auto;
+    border-radius: 18px;
+    box-shadow: 0 4px 32px rgba(60,72,88,.14);
+    padding: 2.5rem 2rem 2rem 2rem;
+    background: #fff;
+}
+.feedback {
+    margin-top: 1rem;
+    font-size: 1rem;
+    color: #ea4335;
+    text-align: center;
+}
+.btn-google {
+    background: linear-gradient(90deg, #4285f4 0%, #34a853 100%);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    padding: .75rem 1.5rem;
+    width: 100%;
+    margin-top: .5rem;
+    box-shadow: 0 2px 8px rgba(66,133,244,0.08);
+    transition: background .2s, box-shadow .2s;
+}
+.btn-google:hover {
+    background: linear-gradient(90deg, #357ae8 0%, #2e7d32 100%);
+    box-shadow: 0 4px 16px rgba(66,133,244,0.16);
+}
+.validation-summary-errors {
+    color: #ea4335;
+    margin-bottom: 1rem;
+    padding: 0.5rem;
+    border-radius: 4px;
+    background-color: #fde8e8;
+}
+.validation-summary-errors ul {
+    list-style: none;
+    padding-left: 0;
+    margin-bottom: 0;
+}
+.field-validation-error {
+    color: #ea4335;
+    font-size: 0.875rem;
+    margin-top: 0.25rem;
+    display: block;
+}
+</style>
+
+<div class="container py-5 d-flex flex-column align-items-center" style="min-height:80vh;">
+    <div class="hero-gradient w-100" style="border-radius: 20px 20px 0 0;">
+        <h1 class="display-5 fw-bold mb-2">Welcome Back</h1>
+        <p class="lead mb-0">Sign in to continue managing your tasks.</p>
+    </div>
+    <div class="card card-login w-100 mt-0" style="max-width:410px;">
+        <h2 class="mb-4 text-center text-primary">Login</h2>
+        @if (!string.IsNullOrEmpty(Model.RegistrationMessage))
+        {
+            <div class="alert alert-success mt-3" role="alert">
+                @Model.RegistrationMessage
+            </div>
+        }
+        @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+        {
+            <div class="feedback mt-3">@Model.ErrorMessage</div>
+        }
+        <form method="post" autocomplete="off" id="loginForm">
+            @Html.AntiForgeryToken()
+            <div asp-validation-summary="ModelOnly" class="validation-summary-errors"></div>
+            <div class="mb-3">
+                <label asp-for="LoginData.Username" class="form-label">Username</label>
+                <input asp-for="LoginData.Username" name="LoginData.Username" class="form-control" autocomplete="username" />
+                <span asp-validation-for="LoginData.Username" class="field-validation-error"></span>
+            </div>
+            <div class="mb-3">
+                <label asp-for="LoginData.Password" class="form-label">Password</label>
+                <input asp-for="LoginData.Password" name="LoginData.Password" type="password" class="form-control" autocomplete="current-password" />
+                <span asp-validation-for="LoginData.Password" class="field-validation-error"></span>
+            </div>
+            <button type="submit" class="btn btn-google w-100">Login</button>
+            <div class="mt-3 text-center">
+                Don't have an account? <a href="/Register">Register</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.20.0/jquery.validate.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/4.0.0/jquery.validate.unobtrusive.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('#loginForm').on('submit', function(e) {
+                if (!$(this).valid()) {
+                    e.preventDefault();
+                    return false;
+                }
+            });
+        });
+    </script>
+}

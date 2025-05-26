@@ -1,0 +1,63 @@
+@page
+@model TodoApi.Pages.Task.DeleteModel
+
+@{
+    ViewData["Title"] = "Delete Task";
+}
+<div class="d-flex align-items-center justify-content-center" style="min-height: 90vh; background: #f8fafc;">
+    <div class="card shadow-lg border-0 rounded-4 p-4 w-100" style="max-width: 480px;">
+        <h2 class="mb-4 fw-bold text-primary text-center">Delete Task</h2>
+        <form method="post" autocomplete="off">
+            <div class="mb-3">
+                <label asp-for="TaskItem.Title" class="form-label fw-semibold">Title</label>
+                <input asp-for="TaskItem.Title" class="form-control form-control-lg" readonly />
+            </div>
+            <div class="mb-3">
+                <label asp-for="TaskItem.Description" class="form-label fw-semibold">Description</label>
+                <input asp-for="TaskItem.Description" class="form-control form-control-lg" readonly />
+            </div>
+            <div class="mb-3">
+                <label asp-for="TaskItem.DueDate" class="form-label fw-semibold">Due Date</label>
+                <input asp-for="TaskItem.DueDate" class="form-control form-control-lg" readonly />
+            </div>
+            <div class="mb-4">
+                <label asp-for="TaskItem.Priority" class="form-label fw-semibold">Priority</label>
+                <select asp-for="TaskItem.Priority" class="form-select form-select-lg" disabled>
+                    <option>Low</option>
+                    <option>Medium</option>
+                    <option>High</option>
+                </select>
+            </div>
+            <div class="d-grid mb-2">
+                <input type="button" id="deleteBtn" value="Delete Task" class="btn btn-danger btn-lg fw-semibold shadow-sm" />
+            </div>
+            <div class="d-grid">
+                <a href="/Task/Index" class="btn btn-secondary btn-lg">Go Back to Task List</a>
+            </div>
+        </form>
+    </div>
+</div>
+<style>
+    body {
+        background: #f8fafc !important;
+    }
+</style>
+<script>
+    document.getElementById('deleteBtn').onclick = async function() {
+        const taskId = '@Model.TaskItem.Id';
+        if (confirm('Are you sure you want to delete this task?')) {
+            const response = await fetch(`/api/Tasks/${taskId}`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json'
+                    // Add Authorization header if required
+                }
+            });
+            if (response.ok) {
+                window.location.href = '/Task/Index';
+            } else {
+                alert('Failed to delete task.');
+            }
+        }
+    };
+</script>
